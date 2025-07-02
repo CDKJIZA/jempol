@@ -304,7 +304,7 @@
       .then(res => res.json())
       .then(data => {
         const tbody = document.getElementById('pasienTbody');
-        tbody.innerHTML = ''; // bersihkan tabel
+        tbody.innerHTML = ''; // kosongkan dulu
 
         data.forEach(pasien => {
           const row = document.createElement('tr');
@@ -318,11 +318,11 @@
         });
       })
       .catch(err => {
-        console.error('Gagal ambil data:', err);
+        console.error('Gagal mengambil data:', err);
       });
   }
 
-  // Panggil saat halaman selesai dimuat
+  // Jalankan saat halaman selesai dimuat
   window.addEventListener('DOMContentLoaded', loadPasienDariSheets);
 </script>
 </body>
