@@ -133,13 +133,14 @@
       background: #f9f9f9;
       border-radius: 8px;
       padding: 20px;
-      height: 300px;
       max-height: 300px;
-      overflow: hidden;
+    }
+
+    canvas {
+      max-height: 260px;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <div class="sidebar">
@@ -152,150 +153,4 @@
     </div>
     <div class="main">
       <div class="header">
-        <h1>Dashboard Monitoring</h1>
-        <span>Admin</span>
-      </div>
-      <div class="summary">
-        <div class="card green">Hijau<br>30</div>
-        <div class="card yellow">Kuning<br>12</div>
-        <div class="card red">Merah<br>4</div>
-      </div>
-
-      <div class="form-container">
-        <h3>Tambah Pasien Baru</h3>
-        <form id="pasienForm">
-          <label>
-            Nama:
-            <input type="text" id="namaPasien" required />
-          </label>
-          <label>
-            Status:
-            <select id="statusPasien">
-              <option value="green">Hijau</option>
-              <option value="yellow">Kuning</option>
-              <option value="red">Merah</option>
-            </select>
-          </label>
-          <label>
-            Jadwal Kontrol:
-            <input type="date" id="jadwalKontrol" required />
-          </label>
-          <label>
-            Kepatuhan:
-            <select id="kepatuhan">
-              <option value="Patuh">Patuh</option>
-              <option value="Tidak Patuh">Tidak Patuh</option>
-            </select>
-          </label>
-          <button type="submit">Tambah Pasien</button>
-        </form>
-      </div>
-
-      <div class="chart-container">
-        <h3>Kepatuhan Minum Obat (30 Hari Terakhir)</h3>
-        <canvas id="kepatuhanChart" style="height: 100%;"></canvas>
-      </div>
-
-      <h3 style="margin-top: 40px;">Data Pasien</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Nama Pasien</th>
-            <th>Status</th>
-            <th>Jadwal Kontrol Berikutnya</th>
-            <th>Kepatuhan Obat</th>
-          </tr>
-        </thead>
-        <tbody id="pasienTbody">
-          <tr>
-            <td>Ahmad</td>
-            <td><span class="status green">Hijau</span></td>
-            <td>2024-04-28</td>
-            <td>Patuh</td>
-          </tr>
-          <tr>
-            <td>Budi</td>
-            <td><span class="status yellow">Kuning</span></td>
-            <td>2024-04-28</td>
-            <td>Tidak Patuh</td>
-          </tr>
-          <tr>
-            <td>Dewi</td>
-            <td><span class="status green">Hijau</span></td>
-            <td>2024-04-30</td>
-            <td>Patuh</td>
-          </tr>
-          <tr>
-            <td>Sari</td>
-            <td><span class="status red">Merah</span></td>
-            <td>2024-04-25</td>
-            <td>Tidak Patuh</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <script>
-    const form = document.getElementById('pasienForm');
-    const tbody = document.getElementById('pasienTbody');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const nama = document.getElementById('namaPasien').value;
-      const status = document.getElementById('statusPasien').value;
-      const kontrol = document.getElementById('jadwalKontrol').value;
-      const kepatuhan = document.getElementById('kepatuhan').value;
-
-      const statusLabel = {
-        green: 'Hijau',
-        yellow: 'Kuning',
-        red: 'Merah'
-      };
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${nama}</td>
-        <td><span class="status ${status}">${statusLabel[status]}</span></td>
-        <td>${kontrol}</td>
-        <td>${kepatuhan}</td>
-      `;
-      tbody.appendChild(row);
-      form.reset();
-    });
-
-    const ctx1 = document.getElementById('kepatuhanChart').getContext('2d');
-    new Chart(ctx1, {
-      type: 'line',
-      data: {
-        labels: Array.from({length: 30}, (_, i) => `H-${30 - i}`),
-        datasets: [{
-          label: 'Tingkat Kepatuhan (%)',
-          data: [
-            90, 85, 82, 80, 78, 75, 70, 65, 60, 55,
-            50, 48, 45, 40, 35, 38, 42, 45, 48, 50,
-            55, 60, 63, 65, 68, 70, 72, 73, 74, 75
-          ],
-          borderColor: '#1b7744',
-          fill: false,
-          tension: 0.3
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            min: 0,
-            max: 100,
-            ticks: {
-              callback: value => value + '%'
-            }
-          }
-        }
-      }
-    });
-  </script>
-</body>
-</html>
+        <h1>Dashboard Mon
