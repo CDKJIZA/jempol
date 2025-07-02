@@ -153,4 +153,146 @@
     </div>
     <div class="main">
       <div class="header">
-        <h1>Dashboard Mon
+        <h1>Dashboard Monitoring</h1>
+        <span>Admin</span>
+      </div>
+      <div class="summary">
+        <div class="card green">Hijau<br>30</div>
+        <div class="card yellow">Kuning<br>12</div>
+        <div class="card red">Merah<br>4</div>
+      </div>
+
+      <div class="form-container">
+        <h3>Tambah Pasien Baru</h3>
+        <form id="pasienForm">
+          <label>
+            Nama:
+            <input type="text" id="namaPasien" required />
+          </label>
+          <label>
+            Status:
+            <select id="statusPasien">
+              <option value="green">Hijau</option>
+              <option value="yellow">Kuning</option>
+              <option value="red">Merah</option>
+            </select>
+          </label>
+          <label>
+            Jadwal Kontrol:
+            <input type="date" id="jadwalKontrol" required />
+          </label>
+          <label>
+            Kepatuhan:
+            <select id="kepatuhan">
+              <option value="Patuh">Patuh</option>
+              <option value="Tidak Patuh">Tidak Patuh</option>
+            </select>
+          </label>
+          <button type="submit">Tambah Pasien</button>
+        </form>
+      </div>
+
+      <div class="chart-container">
+        <h3>Kepatuhan Minum Obat (30 Hari Terakhir)</h3>
+        <canvas id="kepatuhanChart"></canvas>
+      </div>
+
+      <h3 style="margin-top: 40px;">Data Pasien</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nama Pasien</th>
+            <th>Status</th>
+            <th>Jadwal Kontrol Berikutnya</th>
+            <th>Kepatuhan Obat</th>
+          </tr>
+        </thead>
+        <tbody id="pasienTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const sheetURL = "https://script.google.com/macros/s/AKfycbz5JdaCZJXc5gb-jFo1AZp3Psefe7--VkmBLGnnLH9fyOWhB13JQBo-p1-hmWzgESqm/exec";
+    const form = document.getElementById('pasienForm');
+    const tbody = document.getElementById('pasienTbody');
+
+    // Kirim data ke Google Sheet
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nama = document.getElementById('namaPasien').value;
+      const status = document.getElementById('statusPasien').value;
+      const kontrol = document.getElementById('jadwalKontrol').value;
+      const kepatuhan = document.getElementById('kepatuhan').value;
+
+      fetch(sheetURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nama,
+          status,
+          jadwal: kontrol,
+          kepatuhan
+        })
+      }).then(res => {
+        if (res.ok) {
+          alert("✅ Data berhasil ditambahkan.");
+          location.reload();
+        } else {
+          alert("❌ Gagal menambahkan data.");
+        }
+      });
+    });
+
+    // Ambil data dari Google Sheet
+    fetch(sheetURL)
+      .then(res => res.json())
+      .then(data => {
+        data.forEach(pasien => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${pasien.nama}</td>
+            <td><span class="status ${pasien.status.toLowerCase()}">${pasien.status}</span></td>
+            <td>${pasien.jadwal}</td>
+            <td>${pasien.kepatuhan}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      });
+
+    // Chart
+    const ctx = document.getElementById('kepatuhanChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({ length: 30 }, (_, i) => `H-${30 - i}`),
+        datasets: [{
+          label: 'Tingkat Kepatuhan (%)',
+          data: [
+            90, 85, 82, 80, 78, 75, 70, 65, 60, 55,
+            50, 48, 45, 40, 35, 38, 42, 45, 48, 50,
+            55, 60, 63, 65, 68, 70, 72, 73, 74, 75
+          ],
+          borderColor: '#1b7744',
+          fill: false,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 0,
+            max: 100,
+            ticks: {
+              callback: value => value + '%'
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+
