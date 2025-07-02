@@ -207,7 +207,7 @@
             <th>Kepatuhan Obat</th>
           </tr>
         </thead>
-        <tbody id="pasienTbody"></tbody>
+        </tbody>
       </table>
     </div>
   </div>
@@ -292,6 +292,38 @@
         }
       }
     });
-  </script>
+  <script>
+  const statusLabel = {
+    green: 'Hijau',
+    yellow: 'Kuning',
+    red: 'Merah'
+  };
+
+  function loadPasienDariSheets() {
+    fetch('https://script.google.com/macros/s/AKfycbz5JdaCZJXc5gb-jFo1AZp3Psefe7--VkmBLGnnLH9fyOWhB13JQBo-p1-hmWzgESqm/exec')
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById('pasienTbody');
+        tbody.innerHTML = ''; // bersihkan tabel
+
+        data.forEach(pasien => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${pasien.nama}</td>
+            <td><span class="status ${pasien.status}">${statusLabel[pasien.status]}</span></td>
+            <td>${pasien.kontrol}</td>
+            <td>${pasien.kepatuhan}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(err => {
+        console.error('Gagal ambil data:', err);
+      });
+  }
+
+  // Panggil saat halaman selesai dimuat
+  window.addEventListener('DOMContentLoaded', loadPasienDariSheets);
+</script>
 </body>
 </html>
