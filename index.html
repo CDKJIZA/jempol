@@ -325,5 +325,27 @@
   // Jalankan saat halaman selesai dimuat
   window.addEventListener('DOMContentLoaded', loadPasienDariSheets);
 </script>
+<script>
+  async function loadPasienFromSheet() {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbz5JdaCZJXc5gb-jFo1AZp3Psefe7--VkmBLGnnLH9fyOWhB13JQBo-p1-hmWzgESqm/exec');
+    const data = await response.json();
+    const tbody = document.getElementById('pasienTbody');
+    tbody.innerHTML = ''; // Kosongkan dulu
+
+    data.forEach(pasien => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${pasien.nama}</td>
+        <td><span class="status ${pasien.status.toLowerCase()}">${pasien.status}</span></td>
+        <td>${pasien.kontrol}</td>
+        <td>${pasien.kepatuhan}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Jalankan saat halaman dimuat
+  document.addEventListener('DOMContentLoaded', loadPasienFromSheet);
+</script>
 </body>
 </html>
