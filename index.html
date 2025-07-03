@@ -86,6 +86,61 @@
     }
   </style>
 </head>
+  <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbwSpvByITN-rhqwAYgwpzMx0GiWpTKS2rknGoikUM6Wm_GKKs2tuw-CCcvs5bhLtbhH/exec';
+
+  // GET Data dari Google Sheets
+  async function ambilDataPasien() {
+    try {
+      const res = await fetch(scriptURL);
+      const data = await res.json();
+
+      const tbody = document.getElementById('pasienTbody');
+      tbody.innerHTML = '';
+
+      data.forEach(pasien => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${pasien.nama}</td>
+          <td><span class="status ${pasien.status.toLowerCase()}">${pasien.status}</span></td>
+          <td>${pasien.kontrol}</td>
+          <td>${pasien.kepatuhan}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    } catch (err) {
+      console.error('Gagal mengambil data:', err);
+    }
+  }
+
+  // POST Data ke Google Sheets
+  const form = document.getElementById('pasienForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nama = document.getElementById('namaPasien').value;
+    const status = document.getElementById('statusPasien').value;
+    const kontrol = document.getElementById('jadwalKontrol').value;
+    const kepatuhan = document.getElementById('kepatuhan').value;
+
+    const formData = new FormData();
+    formData.append('nama', nama);
+    formData.append('status', status);
+    formData.append('kontrol', kontrol);
+    formData.append('kepatuhan', kepatuhan);
+
+    try {
+      await fetch(scriptURL, { method: 'POST', body: formData });
+      form.reset();
+      ambilDataPasien(); // Refresh data
+    } catch (err) {
+      console.error('Gagal kirim data:', err);
+    }
+  });
+
+  // Load saat halaman pertama dibuka
+  window.addEventListener('DOMContentLoaded', ambilDataPasien);
+</script>
 <body>
   <div class="container">
     <div class="sidebar">
@@ -125,8 +180,49 @@
       </div>
 
       <h3>Data Pasien</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Nama</th>
-            <th>Sta
+      </table>
+
+<div class="chart-container">
+  <h3>Grafik Kepatuhan</h3>
+  <canvas id="grafikKepatuhan" height="100"></canvas>
+</div>
+
+<script>
+  // Grafik dummy (bisa ganti ke Chart.js GET data dinamis)
+  const ctx = document.getElementById('grafikKepatuhan').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: Array.from({ length: 30 }, (_, i) => `H-${30 - i}`),
+      datasets: [{
+        label: 'Kepatuhan (%)',
+        data: [
+          90, 88, 85, 83, 82, 80, 78, 76, 75, 72,
+          70, 68, 65, 63, 60, 62, 65, 67, 70, 72,
+          75, 78, 80, 82, 85, 87, 89, 90, 91, 92
+        ],
+        borderColor: '#1b7744',
+        fill: false,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          ticks: {
+            callback: value => value + '%'
+          }
+        }
+      }
+    }
+  });
+</script>
+
+</div> <!-- tutup .main -->
+</div> <!-- tutup .container -->
+</body>
+</html>
