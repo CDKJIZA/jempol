@@ -91,9 +91,15 @@
 
   // GET Data dari Google Sheets
   async function ambilDataPasien() {
-    try {
-      const res = await fetch(scriptURL);
-      const data = await res.json();
+  try {
+    const res = await fetch(scriptURL);
+    const data = await res.json();
+    tampilkanData(data);
+  } catch (err) {
+    console.warn('Gagal mengambil data dari Google Sheets. Gunakan fallback data.', err);
+    tampilkanData(fallbackData);
+  }
+}
 
       const tbody = document.getElementById('pasienTbody');
       tbody.innerHTML = '';
