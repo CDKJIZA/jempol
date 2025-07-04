@@ -100,8 +100,33 @@
     tampilkanData(fallbackData);
   }
 }
+   function tampilkanData(data) {
+  const tbody = document.getElementById('pasienTbody');
+  tbody.innerHTML = '';
 
-      const tbody = document.getElementById('pasienTbody');
+  let hijau = 0, kuning = 0, merah = 0;
+
+  data.forEach(pasien => {
+    const statusLower = pasien.status.toLowerCase();
+    if (statusLower === 'hijau') hijau++;
+    else if (statusLower === 'kuning') kuning++;
+    else if (statusLower === 'merah') merah++;
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${pasien.nama}</td>
+      <td><span class="status ${statusLower}">${pasien.status}</span></td>
+      <td>${pasien.kontrol}</td>
+      <td>${pasien.kepatuhan}</td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  document.getElementById('hijauCount').innerText = hijau;
+  document.getElementById('kuningCount').innerText = kuning;
+  document.getElementById('merahCount').innerText = merah;
+}   
+    const tbody = document.getElementById('pasienTbody');
       tbody.innerHTML = '';
 
       data.forEach(pasien => {
